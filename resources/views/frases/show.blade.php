@@ -177,7 +177,7 @@
                 $letras = preg_split('//u', $frase->texto, -1, PREG_SPLIT_NO_EMPTY);
             @endphp
             @foreach($letras as $index => $letra)
-                <span class="letra {{ $frase->animacion }}-letter" data-index="{{ $index }}">{{ $letra === ' ' ? '&nbsp;' : $letra }}</span>
+                <span class="letra {{ $frase->animacion }}-letter" data-index="{{ $index }}">{!! $letra === ' ' ? '&nbsp;' : $letra !!}</span>
             @endforeach
         </div>
         
