@@ -16,6 +16,9 @@ class Frase extends Model
 {
     use HasFactory;
 
+    // Modelo que representa una "frase" o animación creada por un usuario.
+    // Contiene el texto a animar, el tipo de animación y referencia al usuario propietario.
+
     protected $fillable = [
         'texto',
         'animacion',
@@ -29,6 +32,7 @@ class Frase extends Model
      */
     public function user(): BelongsTo
     {
+        // Relación inversa: la frase pertenece a un único usuario
         return $this->belongsTo(User::class);
     }
 }

@@ -4,6 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $frase->texto }} - Animación {{ ucfirst($frase->animacion) }}</title>
+    {{--
+        Vista: Mostrar una animación (show)
+        - Contiene estilos inline para las diferentes animaciones (matrix, quantum, nebula, hologram, particle)
+        - Incluye un <canvas> que se usa para los efectos de fondo y un bloque de JS con las funciones de animación.
+        Notas:
+        - Los comentarios en los bloques CSS usan /* ... */ para no romper el CSS.
+        - Los comentarios en JS usan //.
+    --}}
     <style>
         * {
             margin: 0;
@@ -164,16 +172,21 @@
             z-index: 0;
         }
     </style>
+    {{-- Librería GSAP usada para animaciones de texto/dom (timeline, tweening) --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
     <canvas id="bgCanvas"></canvas>
     
     <div class="container">
+        {{-- Título de la animación (nombre del tipo) --}}
         <div class="animation-title">{{ $frase->animacion }} Animation</div>
+
+        {{-- Contenedor donde se colocan las letras individuales. Cada letra es un <span> con clase según el tipo de animación. --}}
         <div class="animation-container" id="animationContainer">
             @php
                 // Dividir el texto en caracteres individuales incluyendo caracteres multibyte
+                // Se usa preg_split con PREG_SPLIT_NO_EMPTY para obtener arrays de caracteres Unicode
                 $letras = preg_split('//u', $frase->texto, -1, PREG_SPLIT_NO_EMPTY);
             @endphp
             @foreach($letras as $index => $letra)
@@ -184,18 +197,22 @@
         <div class="controls">
             <a href="{{ route('frases.index') }}" class="btn">📋 Mis Animaciones</a>
             <a href="{{ route('frases.create') }}" class="btn">✨ Nueva Animación</a>
-            <a href="{{ route('dashboard') }}" class="btn">🏠 Dashboard</a>
         </div>
     </div>
 
     <script>
+        // Variables globales para las animaciones
+        // animationType: slug del tipo de animación (ej. 'matrix', 'quantum', ...)
         const animationType = '{{ $frase->animacion }}';
+        // Seleccionar todos los elementos que representan letras individuales
         const letras = document.querySelectorAll('.letra');
+        // Contenedor DOM donde están las letras
         const container = document.getElementById('animationContainer');
+        // Canvas usado para efectos de fondo (lluvia, partículas, escaneo...)
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Configurar canvas
+        // Ajustar tamaño inicial del canvas al viewport
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
@@ -669,22 +686,16 @@
         }
 
         // Ejecutar animación según el tipo
-        switch(animationType) {
-            case 'matrix':
-                matrixAnimation();
-                break;
-            case 'quantum':
-                quantumAnimation();
-                break;
-            case 'nebula':
-                nebulaAnimation();
-                break;
-            case 'hologram':
-                hologramAnimation();
-                break;
-            case 'particle':
-                particleAnimation();
-                break;
+        if (animationType === 'matrix') {
+            matrixAnimation();
+        } else if (animationType === 'quantum') {
+            quantumAnimation();
+        } else if (animationType === 'nebula') {
+            nebulaAnimation();
+        } else if (animationType === 'hologram') {
+            hologramAnimation();
+        } else if (animationType === 'particle') {
+            particleAnimation();
         }
 
         // Ajustar canvas al redimensionar

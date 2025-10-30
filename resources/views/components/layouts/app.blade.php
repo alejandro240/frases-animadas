@@ -7,6 +7,14 @@
     @else
         <title>{{ config('app.name') }}</title>
     @endif
+    {{--
+        Layout principal de la aplicación (header/nav y contenedor principal).
+        - Aquí se define el nav personalizado (no usamos el nav de Laravel/Flux).
+        - También contiene el dropdown de usuario con nombre, email y logout.
+        Comentarios:
+        - Usamos comentarios Blade {{-- --}} para explicar partes HTML/Blade.
+        - Los estilos CSS usan /* ... */ como es habitual.
+    --}}
     <style>
         .user-dropdown {
             position: relative;
@@ -85,22 +93,90 @@
             font-weight: bold;
             font-size: 0.875rem;
         }
+        /* Custom Nav Styles */
+        .custom-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: #18181b;
+            border-bottom: 1px solid #3f3f46;
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: #a1a1aa;
+            text-decoration: none;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-link:hover {
+            color: #e4e4e7;
+            background: #27272a;
+        }
+        
+        .nav-link.active {
+            color: #e4e4e7;
+            background: #27272a;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-zinc-900">
-    <flux:header container class="border-b border-zinc-700 bg-zinc-900">
-        <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+    {{-- Custom Navigation: reemplaza el nav de Flux y contiene enlaces principales y cuenta --}}
+    <nav class="custom-nav">
+        <div class="nav-left">
+            <a href="{{ route('frases.index') }}" class="nav-logo">
+                Frases Animadas
+            </a>
+            
+            {{-- Enlaces principales a Mis Animaciones y Crear nueva --}}
+            <div class="nav-links">
+                <a href="{{ route('frases.index') }}" class="nav-link {{ request()->routeIs('frases.index') ? 'active' : '' }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Mis Animaciones
+                </a>
+                
+                <a href="{{ route('frases.create') }}" class="nav-link {{ request()->routeIs('frases.create') ? 'active' : '' }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Nueva Animación
+                </a>
+            </div>
+        </div>
 
-        <flux:brand href="{{ route('frases.index') }}" logo="{{ asset('images/logo.svg') }}" name="{{ config('app.name') }}" class="max-lg:hidden dark:hidden" />
-        <flux:brand href="{{ route('frases.index') }}" logo="{{ asset('images/logo.svg') }}" name="{{ config('app.name') }}" class="max-lg:!hidden hidden dark:flex" />
-
-        <flux:navbar class="-mb-px max-lg:hidden">
-            <flux:navbar.item icon="sparkles" :href="route('frases.index')" :current="request()->routeIs('frases.index')" wire:navigate>Mis Animaciones</flux:navbar.item>
-            <flux:navbar.item icon="plus-circle" :href="route('frases.create')" :current="request()->routeIs('frases.create')" wire:navigate>Nueva Animación</flux:navbar.item>
-        </flux:navbar>
-
-        <flux:spacer />
-
+        {{-- Bloque de cuenta: iniciales, nombre y menú desplegable con info y logout --}}
         <div class="user-dropdown">
             <div class="user-profile-button">
                 <div class="user-initials">{{ auth()->user()->initials() }}</div>
@@ -111,6 +187,7 @@
             </div>
             
             <div class="user-dropdown-menu">
+                {{-- Información de usuario (solo lectura) --}}
                 <div class="user-dropdown-item" style="pointer-events: none; opacity: 0.7;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -119,6 +196,7 @@
                     <span>{{ auth()->user()->name }}</span>
                 </div>
                 
+                {{-- Email del usuario (solo lectura) --}}
                 <div class="user-dropdown-item" style="pointer-events: none; opacity: 0.7;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2" y="4" width="20" height="16" rx="2"></rect>
@@ -129,6 +207,7 @@
                 
                 <div class="user-dropdown-separator"></div>
                 
+                {{-- Formulario para cerrar sesión (POST) --}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="user-dropdown-item">
@@ -142,11 +221,11 @@
                 </form>
             </div>
         </div>
-    </flux:header>
+    </nav>
 
-    <flux:main container>
+    <main class="container mx-auto px-4">
         {{ $slot }}
-    </flux:main>
+    </main>
 </body>
 </html>
 
