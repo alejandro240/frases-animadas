@@ -24,21 +24,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Eliminar frase
     Route::delete('/frases/{frase}', [App\Http\Controllers\FraseController::class, 'destroy'])->name('frases.destroy');
-});
-
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
-
-
-
-Route::middleware(['auth'])->group(function () {
+    
     Route::redirect('settings', 'settings/profile');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');

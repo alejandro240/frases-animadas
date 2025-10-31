@@ -2,60 +2,72 @@
     Vista: Crear nueva animación
     - Muestra un formulario con dos campos: texto y tipo de animación.
     - Se envía por POST a la ruta 'frases.store'.
-    Comentarios en Blade usan {{-- --}} para no renderizar en HTML.
 -->
 <x-layouts.app>
-        <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+    <div class="py-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8 text-center">
+                <h1 class="text-4xl font-bold text-white mb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
                     Crear Nueva Animación
-                </h2>
+                </h1>
+                <p class="text-gray-400">Elige un texto y el tipo de animación que prefieras</p>
+            </div>
 
-                {{-- Formulario de creación de frase --}}
+            <!-- Formulario -->
+            <div class="bg-zinc-800/50 border border-zinc-700 rounded-xl p-8">
                 <form action="{{ route('frases.store') }}" method="POST" class="space-y-6">
                     @csrf
                     
-                    {{-- Campo: Texto a animar --}}
+                    <!-- Campo: Texto a animar -->
                     <div>
-                        <label for="texto" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="texto" class="block text-white font-semibold mb-2">
                             Texto a Animar
                         </label>
-                        {{-- Input de texto; requerido y con placeholder --}}
                         <input type="text" name="texto" id="texto" required 
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                               value="{{ old('texto') }}"
+                               class="w-full bg-zinc-900 border border-zinc-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 focus:outline-none transition-all"
                                placeholder="Escribe una letra, palabra o frase...">
-                        {{-- Mostrar errores de validación para 'texto' --}}
                         @error('texto')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    {{-- Campo: Tipo de animación (select) --}}
+                    <!-- Campo: Tipo de animación -->
                     <div>
-                        <label for="animacion" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label for="animacion" class="block text-white font-semibold mb-3">
                             Tipo de Animación
                         </label>
-                        <select name="animacion" id="animacion" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Selecciona un tipo de animación</option>
-                            {{-- Los tipos vienen desde el controlador como $tiposAnimacion --}}
+                        
+                        <!-- Grid de opciones con radio buttons estilizados -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach($tiposAnimacion as $valor => $nombre)
-                                <option value="{{ $valor }}">{{ $nombre }}</option>
+                            <label class="relative flex items-center gap-3 p-4 bg-zinc-900 border border-zinc-600 rounded-lg cursor-pointer hover:border-purple-500 hover:bg-zinc-800 transition-all group">
+                                <input type="radio" name="animacion" value="{{ $valor }}" required
+                                       {{ old('animacion') == $valor ? 'checked' : '' }}
+                                       class="w-4 h-4 text-purple-600 bg-zinc-700 border-zinc-500 focus:ring-purple-500">
+                                <div class="flex-1">
+                                    <span class="text-white font-medium group-hover:text-purple-400 transition-colors">{{ $nombre }}</span>
+                                </div>
+                            </label>
                             @endforeach
-                        </select>
-                        {{-- Mostrar errores de validación para 'animacion' --}}
+                        </div>
+                        
                         @error('animacion')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    {{-- Botón submit --}}
-                    <div>
+                    <!-- Botones -->
+                    <div class="flex gap-4 pt-4">
                         <button type="submit" 
-                                class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                            Crear Animación
+                                class="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                            ✨ Crear Animación
                         </button>
+                        <a href="{{ route('frases.index') }}" 
+                           class="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold rounded-lg transition-all">
+                            Cancelar
+                        </a>
                     </div>
                 </form>
             </div>

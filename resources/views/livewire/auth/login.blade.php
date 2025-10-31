@@ -1,57 +1,79 @@
 <x-layouts.auth>
     <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+        <!-- Header -->
+        <div class="mb-2 text-center">
+            <h1 class="text-3xl font-bold text-white mb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Iniciar Sesión
+            </h1>
+            <p class="text-gray-400 text-sm">Ingresa tus credenciales para acceder a tu cuenta</p>
+        </div>
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
-            @csrf
+        <!-- Formulario -->
+        <div class="bg-zinc-800/50 border border-zinc-700 rounded-xl p-6">
+            <form method="POST" action="{{ route('login.store') }}" class="space-y-5">
+                @csrf
 
-            <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Email address')"
-                type="email"
-                required
-                autofocus
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+                <!-- Email Address -->
+                <div>
+                    <label for="email" class="block text-white font-semibold mb-2">
+                        Correo Electrónico
+                    </label>
+                    <input type="email" name="email" id="email" required autofocus autocomplete="email"
+                           value="{{ old('email') }}"
+                           class="w-full bg-zinc-900 border border-zinc-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 focus:outline-none transition-all"
+                           placeholder="correo@ejemplo.com">
+                    @error('email')
+                        <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <!-- Password -->
-            <div class="relative">
-                <flux:input
-                    name="password"
-                    :label="__('Password')"
-                    type="password"
-                    required
-                    autocomplete="current-password"
-                    :placeholder="__('Password')"
-                    viewable
-                />
+                <!-- Password -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="password" class="block text-white font-semibold">
+                            Contraseña
+                        </label>
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="text-sm text-purple-400 hover:text-purple-300 transition-colors" wire:navigate>
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        @endif
+                    </div>
+                    <input type="password" name="password" id="password" required autocomplete="current-password"
+                           class="w-full bg-zinc-900 border border-zinc-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 focus:outline-none transition-all"
+                           placeholder="••••••••">
+                    @error('password')
+                        <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                @if (Route::has('password.request'))
-                    <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
-                        {{ __('Forgot your password?') }}
-                    </flux:link>
-                @endif
-            </div>
+                <!-- Remember Me -->
+                <div class="flex items-center">
+                    <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}
+                           class="w-4 h-4 text-purple-600 bg-zinc-700 border-zinc-500 rounded focus:ring-purple-500 focus:ring-2">
+                    <label for="remember" class="ml-2 text-sm text-gray-300">
+                        Recordarme
+                    </label>
+                </div>
 
-            <!-- Remember Me -->
-            <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
-
-            <div class="flex items-center justify-end">
-                <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
-                    {{ __('Log in') }}
-                </flux:button>
-            </div>
-        </form>
+                <div class="pt-2">
+                    <button type="submit" data-test="login-button"
+                            class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                        🔐 Iniciar Sesión
+                    </button>
+                </div>
+            </form>
+        </div>
 
         @if (Route::has('register'))
-            <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-600 dark:text-zinc-400">
-                <span>{{ __('Don\'t have an account?') }}</span>
-                <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
+            <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-400">
+                <span>¿No tienes una cuenta?</span>
+                <a href="{{ route('register') }}" class="text-purple-400 hover:text-purple-300 font-semibold transition-colors" wire:navigate>
+                    Regístrate
+                </a>
             </div>
         @endif
     </div>

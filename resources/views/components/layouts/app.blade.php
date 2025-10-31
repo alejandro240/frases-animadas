@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+
 <head>
     @include('partials.head')
     @if(isset($title))
-        <title>{{ $title }} - {{ config('app.name') }}</title>
+    <title>{{ $title }} - {{ config('app.name') }}</title>
     @else
-        <title>{{ config('app.name') }}</title>
+    <title>{{ config('app.name') }}</title>
     @endif
-    {{--
+    <!--
         Layout principal de la aplicación (header/nav y contenedor principal).
         - Aquí se define el nav personalizado (no usamos el nav de Laravel/Flux).
         - También contiene el dropdown de usuario con nombre, email y logout.
         Comentarios:
         - Usamos comentarios Blade {{-- --}} para explicar partes HTML/Blade.
         - Los estilos CSS usan /* ... */ como es habitual.
-    --}}
+-->
     <style>
         .user-dropdown {
             position: relative;
             display: inline-block;
         }
-        
+
         .user-dropdown-menu {
             display: none;
             position: absolute;
@@ -34,11 +35,11 @@
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
             z-index: 50;
         }
-        
+
         .user-dropdown:hover .user-dropdown-menu {
             display: block;
         }
-        
+
         .user-dropdown-item {
             display: flex;
             align-items: center;
@@ -54,17 +55,17 @@
             cursor: pointer;
             font-size: 14px;
         }
-        
+
         .user-dropdown-item:hover {
             background-color: #3f3f46;
         }
-        
+
         .user-dropdown-separator {
             height: 1px;
             background-color: #3f3f46;
             margin: 0.25rem 0;
         }
-        
+
         .user-profile-button {
             display: flex;
             align-items: center;
@@ -77,11 +78,11 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
+
         .user-profile-button:hover {
             background: #52525b;
         }
-        
+
         .user-initials {
             display: flex;
             align-items: center;
@@ -93,6 +94,7 @@
             font-weight: bold;
             font-size: 0.875rem;
         }
+
         /* Custom Nav Styles */
         .custom-nav {
             display: flex;
@@ -102,13 +104,13 @@
             background: #18181b;
             border-bottom: 1px solid #3f3f46;
         }
-        
+
         .nav-left {
             display: flex;
             align-items: center;
             gap: 2rem;
         }
-        
+
         .nav-logo {
             font-size: 1.5rem;
             font-weight: bold;
@@ -118,13 +120,13 @@
             background-clip: text;
             text-decoration: none;
         }
-        
+
         .nav-links {
             display: flex;
             gap: 1rem;
             align-items: center;
         }
-        
+
         .nav-link {
             padding: 0.5rem 1rem;
             color: #a1a1aa;
@@ -136,18 +138,19 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .nav-link:hover {
             color: #e4e4e7;
             background: #27272a;
         }
-        
+
         .nav-link.active {
             color: #e4e4e7;
             background: #27272a;
         }
     </style>
 </head>
+
 <body class="min-h-screen bg-zinc-900">
     {{-- Custom Navigation: reemplaza el nav de Flux y contiene enlaces principales y cuenta --}}
     <nav class="custom-nav">
@@ -155,7 +158,7 @@
             <a href="{{ route('frases.index') }}" class="nav-logo">
                 Frases Animadas
             </a>
-            
+
             {{-- Enlaces principales a Mis Animaciones y Crear nueva --}}
             <div class="nav-links">
                 <a href="{{ route('frases.index') }}" class="nav-link {{ request()->routeIs('frases.index') ? 'active' : '' }}">
@@ -165,7 +168,7 @@
                     </svg>
                     Mis Animaciones
                 </a>
-                
+
                 <a href="{{ route('frases.create') }}" class="nav-link {{ request()->routeIs('frases.create') ? 'active' : '' }}">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -185,7 +188,7 @@
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
             </div>
-            
+
             <div class="user-dropdown-menu">
                 {{-- Información de usuario (solo lectura) --}}
                 <div class="user-dropdown-item" style="pointer-events: none; opacity: 0.7;">
@@ -195,7 +198,7 @@
                     </svg>
                     <span>{{ auth()->user()->name }}</span>
                 </div>
-                
+
                 {{-- Email del usuario (solo lectura) --}}
                 <div class="user-dropdown-item" style="pointer-events: none; opacity: 0.7;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -204,9 +207,9 @@
                     </svg>
                     <span>{{ auth()->user()->email }}</span>
                 </div>
-                
+
                 <div class="user-dropdown-separator"></div>
-                
+
                 {{-- Formulario para cerrar sesión (POST) --}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -227,5 +230,5 @@
         {{ $slot }}
     </main>
 </body>
-</html>
 
+</html>
