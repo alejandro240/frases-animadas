@@ -4,14 +4,19 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
-// Ruta principal redirige a la lista de frases
+// Ruta principal redirige al dashboard
 Route::get('/', function () {
-    return redirect()->route('frases.index');
+    return redirect()->route('dashboard');
 })->middleware('auth')->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    // Lista de frases del usuario
-    Route::get('/frases', [App\Http\Controllers\FraseController::class, 'index'])->name('frases.index');
+    // Dashboard / Lista de frases del usuario
+    Route::get('/dashboard', [App\Http\Controllers\FraseController::class, 'index'])->name('dashboard');
+    
+    // Alias para mantener compatibilidad con frases.index
+    Route::get('/frases', function () {
+        return redirect()->route('dashboard');
+    })->name('frases.index');
     
     // Página para crear nueva frase
     Route::get('/frases/crear', [App\Http\Controllers\FraseController::class, 'create'])->name('frases.create');
